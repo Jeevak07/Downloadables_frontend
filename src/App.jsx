@@ -1,6 +1,5 @@
 import { useState } from "react";
 import API_BASE from "./config/api";
-import axios from "axios";
 import "./App.css";
 
 function App() {
@@ -55,11 +54,19 @@ function App() {
     setYtAudioFormats([]);
 
     try {
-      const res = await axios.get(`${API_BASE}/info`, {
-        params: { url: link },
-      });
+      const res = await fetch(
+        `http://localhost:5000/info?url=${encodeURIComponent(link)}`
+      );
 
-      const data = res.data;
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("YT INFO ERROR:", res.status, text);
+        setError("Server error while fetching YouTube info");
+        setLoading(false);
+        return;
+      }
+
+      const data = await res.json();
 
       if (data.error) {
         setError(data.error);
@@ -70,7 +77,7 @@ function App() {
       }
     } catch (err) {
       console.error(err);
-      setError("Server error while fetching YouTube info");
+      setError("Failed to fetch video info");
     } finally {
       setLoading(false);
     }
@@ -85,7 +92,7 @@ function App() {
       alert("Select a quality first");
       return;
     }
-    window.location.href = `${API_BASE}/download?url=${encodeURIComponent(
+    window.location.href = `http://localhost:5000/download?url=${encodeURIComponent(
       link
     )}&format=${formatId}`;
   };
@@ -102,11 +109,21 @@ function App() {
     setIgData(null);
 
     try {
-      const res = await axios.get(`${API_BASE}/instagram-info`, {
-        params: { url: link, type: igType },
-      });
+      const res = await fetch(
+        `http://localhost:5000/instagram-info?url=${encodeURIComponent(
+          link
+        )}&type=${igType}`
+      );
 
-      const data = res.data;
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("IG INFO ERROR:", res.status, text);
+        setError("Server error while fetching Instagram media");
+        setLoading(false);
+        return;
+      }
+
+      const data = await res.json();
 
       if (data.error) {
         setError(data.error);
@@ -116,7 +133,7 @@ function App() {
       }
     } catch (err) {
       console.error(err);
-      setError("Server error while fetching Instagram media");
+      setError("Failed to fetch Instagram media");
     } finally {
       setLoading(false);
     }
@@ -132,7 +149,7 @@ function App() {
     // For posts & reels: Instaloader reel/post route
     if (igType === "post" || igType === "reel") {
       window.location.href =
-        `${API_BASE}/instagram-reel-instaloader?url=${encodeURIComponent(
+        `http://localhost:5000/instagram-reel-instaloader?url=${encodeURIComponent(
           link
         )}`;
       return;
@@ -141,7 +158,7 @@ function App() {
     // For stories: yt-dlp story route
     if (igType === "story") {
       window.location.href =
-        `${API_BASE}/instagram-stories-instaloader?url=${encodeURIComponent(
+        `http://localhost:5000/instagram-stories-instaloader?url=${encodeURIComponent(
           link
         )}`;
       return;
@@ -288,7 +305,9 @@ function App() {
       "";
 
     const thumbSrc = rawThumb
-      ? `${API_BASE}/proxy-image?url=${encodeURIComponent(rawThumb)}`
+      ? `http://localhost:5000/proxy-image?url=${encodeURIComponent(
+          rawThumb
+        )}`
       : "";
 
     const goPrev = () => {
@@ -354,7 +373,7 @@ function App() {
                   <video
                     controls
                     className="previewVideo"
-                    src={`${API_BASE}/proxy-video?url=${encodeURIComponent(
+                    src={`http://localhost:5000/proxy-video?url=${encodeURIComponent(
                       current.url
                     )}`}
                   />
