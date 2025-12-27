@@ -55,7 +55,7 @@ function App() {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/info?url=${encodeURIComponent(link)}`
+        `${API_BASE}info?url=${encodeURIComponent(link)}`
       );
 
       if (!res.ok) {
@@ -92,7 +92,7 @@ function App() {
       alert("Select a quality first");
       return;
     }
-    window.location.href = `http://localhost:5000/download?url=${encodeURIComponent(
+    window.location.href = `${API_BASE}download?url=${encodeURIComponent(
       link
     )}&format=${formatId}`;
   };
@@ -110,7 +110,7 @@ function App() {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/instagram-info?url=${encodeURIComponent(
+        `${API_BASE}instagram-info?url=${encodeURIComponent(
           link
         )}&type=${igType}`
       );
@@ -149,7 +149,7 @@ function App() {
     // For posts & reels: Instaloader reel/post route
     if (igType === "post" || igType === "reel") {
       window.location.href =
-        `http://localhost:5000/instagram-reel-instaloader?url=${encodeURIComponent(
+        `${API_BASE}instagram-reel-instaloader?url=${encodeURIComponent(
           link
         )}`;
       return;
@@ -158,7 +158,7 @@ function App() {
     // For stories: yt-dlp story route
     if (igType === "story") {
       window.location.href =
-        `http://localhost:5000/instagram-stories-instaloader?url=${encodeURIComponent(
+        `${API_BASE}instagram-stories-instaloader?url=${encodeURIComponent(
           link
         )}`;
       return;
@@ -305,7 +305,7 @@ function App() {
       "";
 
     const thumbSrc = rawThumb
-      ? `http://localhost:5000/proxy-image?url=${encodeURIComponent(
+      ? `${API_BASE}proxy-image?url=${encodeURIComponent(
           rawThumb
         )}`
       : "";
@@ -373,7 +373,7 @@ function App() {
                   <video
                     controls
                     className="previewVideo"
-                    src={`http://localhost:5000/proxy-video?url=${encodeURIComponent(
+                    src={`${API_BASE}proxy-video?url=${encodeURIComponent(
                       current.url
                     )}`}
                   />
@@ -391,7 +391,7 @@ function App() {
               controls
               className="previewVideo"
               poster={thumbSrc}
-              src={`http://localhost:5000/proxy-video?url=${encodeURIComponent(
+              src={`${API_BASE}proxy-video?url=${encodeURIComponent(
                 current.url
               )}`}
             /> */}
